@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../data/onboarding_data.dart';
+import '../../auth/screens/preview_screen.dart';
+
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,6 +15,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int currentIndex = 0;
 
+  void _goToPreview(BuildContext context) {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const PreviewScreen(),
+    ),
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,17 +33,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            children: [
-              _topBar(),
-              const SizedBox(height: 24),
-              _carousel(),
-              const SizedBox(height: 20),
-              _indicator(),
-              const SizedBox(height: 24),
-              _nextButton(),
-              const SizedBox(height: 20),
-            ],
-          ),
+              children: [
+                _topBar(context),
+                const SizedBox(height: 24),
+                _carousel(),
+                const SizedBox(height: 20),
+                _indicator(),
+                const SizedBox(height: 24),
+                _nextButton(context),
+                const SizedBox(height: 20),
+              ],
+            ),
         ),
       ),
     );
@@ -39,30 +51,61 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // ================== WIDGETS ==================
 
-  Widget _topBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Row(
-          children: [
-            Icon(Icons.wallpaper, color: primaryPurple),
-            SizedBox(width: 6),
-            Text(
-              'Wallpapers',
-              style: TextStyle(
-                color: textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
+  // Widget _topBar() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: const [
+  //       Row(
+  //         children: [
+  //           Icon(Icons.wallpaper, color: primaryPurple),
+  //           SizedBox(width: 6),
+  //           Text(
+  //             'Wallpapers',
+  //             style: TextStyle(
+  //               color: textPrimary,
+  //               fontWeight: FontWeight.w600,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       Text(
+  //         'Skip',
+  //         style: TextStyle(color: textSecondary),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _topBar(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Row(
+        children: const [
+          Icon(Icons.wallpaper, color: primaryPurple),
+          SizedBox(width: 6),
+          Text(
+            'Wallpapers',
+            style: TextStyle(
+              color: textPrimary,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
-        Text(
+          ),
+        ],
+      ),
+      GestureDetector(
+        onTap: () => _goToPreview(context),
+        child: const Text(
           'Skip',
           style: TextStyle(color: textSecondary),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
+
+
 
   Widget _carousel() {
     return Expanded(
@@ -149,30 +192,67 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _nextButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: ElevatedButton(
-        onPressed: () {
-          if (currentIndex < onboardingItems.length - 1) {
-            _controller.nextPage(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.ease,
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryPurple,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-        child: const Text(
-          'Next',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+  // Widget _nextButton() {
+  //   return SizedBox(
+  //     width: double.infinity,
+  //     height: 52,
+  //     child: ElevatedButton(
+  //       onPressed: () {
+  //         if (currentIndex < onboardingItems.length - 1) {
+  //           _controller.nextPage(
+  //             duration: const Duration(milliseconds: 400),
+  //             curve: Curves.ease,
+  //           );
+  //         }
+  //       },
+  //       style: ElevatedButton.styleFrom(
+  //         backgroundColor: primaryPurple,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(14),
+  //         ),
+  //       ),
+  //       child: const Text(
+  //         'Next',
+  //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _nextButton(BuildContext context) {
+  return SizedBox(
+    width: double.infinity,
+    height: 52,
+    child: ElevatedButton(
+      onPressed: () {
+        if (currentIndex < onboardingItems.length - 1) {
+          // Move to next carousel page
+          _controller.nextPage(
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.ease,
+          );
+        } else {
+          // LAST PAGE → GO TO PREVIEW
+          _goToPreview(context);
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryPurple,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
         ),
       ),
-    );
-  }
+      child: Text(
+        currentIndex == onboardingItems.length - 1
+            ? 'Get Started'
+            : 'Next',
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+}
 }
