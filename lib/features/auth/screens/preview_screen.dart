@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import 'login_screen.dart';
+import 'signup_screen.dart';
 
 class PreviewScreen extends StatelessWidget {
   const PreviewScreen({super.key});
@@ -53,10 +55,7 @@ class PreviewScreen extends StatelessWidget {
 
                   const Text(
                     'Join the fun and get started',
-                    style: TextStyle(
-                      color: textSecondary,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: textSecondary, fontSize: 14),
                   ),
 
                   const SizedBox(height: 32),
@@ -64,16 +63,33 @@ class PreviewScreen extends StatelessWidget {
                   // Get Started Button
                   _primaryButton(
                     text: 'Get Started',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                      );
+                    },
                   ),
+
+                  // _primaryButton(
+                  //   text: 'Get Started',
+                  //   onTap: () {},
+                  // ),
 
                   const SizedBox(height: 14),
 
                   // Login Button
                   _outlineButton(
                     text: 'Log In',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
                   ),
+
+                  // _outlineButton(text: 'Log In', onTap: () {}),
 
                   const SizedBox(height: 40),
                 ],
@@ -121,10 +137,7 @@ class PreviewScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        child: Text(
-          text,
-          style: const TextStyle(color: textPrimary),
-        ),
+        child: Text(text, style: const TextStyle(color: textPrimary)),
       ),
     );
   }

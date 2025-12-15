@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/auth_text_field.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -50,10 +51,7 @@ class LoginScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              Text(
-                'or sign in with',
-                style: TextStyle(color: textSecondary),
-              ),
+              Text('or sign in with', style: TextStyle(color: textSecondary)),
 
               const SizedBox(height: 16),
 
@@ -63,14 +61,41 @@ class LoginScreen extends StatelessWidget {
 
               const Spacer(),
 
+              // Text.rich(
+              //   TextSpan(
+              //     text: "Don't have an account? ",
+              //     style: TextStyle(color: textSecondary),
+              //     children: const [
+              //       TextSpan(
+              //         text: 'Sign Up',
+              //         style: TextStyle(color: primaryPurple),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Text.rich(
                 TextSpan(
                   text: "Don't have an account? ",
                   style: TextStyle(color: textSecondary),
-                  children: const [
-                    TextSpan(
-                      text: 'Sign Up',
-                      style: TextStyle(color: primaryPurple),
+                  children: [
+                    WidgetSpan(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignUpScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: primaryPurple,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
