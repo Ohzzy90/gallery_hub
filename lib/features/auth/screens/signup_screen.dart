@@ -9,147 +9,145 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgColor,
+      resizeToAvoidBottomInset: true,  // Adjust layout when keyboard appears
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
+          child: SingleChildScrollView(  // Make content scrollable to avoid overflow
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
 
-              // Logo
-              const Icon(Icons.palette, size: 48, color: primaryPurple),
-
-              const SizedBox(height: 16),
-
-              const Text(
-                'Create Your Account',
-                style: TextStyle(
-                  color: textPrimary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // Full Name
-              _inputField(hint: 'Enter your full name', label: 'Full Name'),
-
-              const SizedBox(height: 16),
-
-              // Email
-              _inputField(hint: 'Enter your email', label: 'Email'),
-
-              const SizedBox(height: 16),
-
-              // Password
-              _inputField(
-                hint: 'Enter your password',
-                label: 'Password',
-                obscure: true,
-              ),
-
-              const SizedBox(height: 24),
-
-              // Sign Up Button
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryPurple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                // Logo with purple background and white icon
+                Container(
+                  height: 72,
+                  width: 72,
+                  decoration: BoxDecoration(
+                    color: primaryPurple,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
+                  child: const Center(
+                    child: Icon(
+                      Icons.palette,
                       color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      size: 36,
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-              // Divider
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.white24)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'or sign up with',
-                      style: TextStyle(color: textSecondary),
+                const Text(
+                  'Create Your Account',
+                  style: TextStyle(
+                    color: textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Full Name
+                _inputField(hint: 'Enter your full name', label: 'Full Name'),
+
+                const SizedBox(height: 16),
+
+                // Email
+                _inputField(hint: 'Enter your email', label: 'Email'),
+
+                const SizedBox(height: 16),
+
+                // Password
+                _inputField(
+                  hint: 'Enter your password',
+                  label: 'Password',
+                  obscure: true,
+                ),
+
+                const SizedBox(height: 24),
+
+                // Sign Up Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
-                  ),
-                  Expanded(child: Divider(color: Colors.white24)),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // Google Button
-              _socialButton(text: 'Continue with Google'),
-
-              const SizedBox(height: 12),
-
-              // Apple Button
-              _socialButton(text: 'Continue with Apple', filled: true),
-
-              const Spacer(),
-
-              // Bottom Text
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text(
-              //       'Already have an account? ',
-              //       style: TextStyle(color: textSecondary),
-              //     ),
-              //     GestureDetector(
-              //       onTap: () => Navigator.pop(context),
-              //       child: const Text(
-              //         'Log In',
-              //         style: TextStyle(
-              //           color: primaryPurple,
-              //           fontWeight: FontWeight.w600,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Already have an account? ',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      );
-                    },
                     child: const Text(
-                      'Log In',
+                      'Sign Up',
                       style: TextStyle(
-                        color: primaryPurple,
+                        color: Colors.white,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
 
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 20),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.white24)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        'or sign up with',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    Expanded(child: Divider(color: Colors.white24)),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // Google Button
+                _socialButton(text: 'Continue with Google'),
+
+                const SizedBox(height: 12),
+
+                // Apple Button
+                _socialButton(text: 'Continue with Apple', filled: true),
+
+                const SizedBox(height: 24),
+
+                // Bottom Text
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Already have an account? ',
+                      style: TextStyle(color: textSecondary),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Log In',
+                        style: TextStyle(
+                          color: primaryPurple,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

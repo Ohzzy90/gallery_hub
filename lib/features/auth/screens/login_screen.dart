@@ -14,65 +14,93 @@ class LoginScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 48),
 
-              const Icon(Icons.palette, color: primaryPurple, size: 48),
-              const SizedBox(height: 16),
+              // Logo
+              Container(
+                height: 72,
+                width: 72,
+                decoration: BoxDecoration(
+                  color: primaryPurple,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.palette,
+                    color: Colors.white,
+                    size: 36,
+                  ),
+                ),
+              ),
 
+              const SizedBox(height: 20),
+
+              // Title
               const Text(
                 'Login',
                 style: TextStyle(
                   color: textPrimary,
                   fontSize: 22,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 36),
 
+              // Email
               const AuthTextField(hint: 'Enter your email'),
+
               const SizedBox(height: 16),
-              const AuthTextField(hint: 'Enter your password', obscure: true),
 
-              const SizedBox(height: 8),
+              // Password
+              const AuthTextField(
+                hint: 'Enter your password',
+                obscure: true,
+              ),
 
+              const SizedBox(height: 10),
+
+              // Forgot password
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   'Forgot Password?',
-                  style: TextStyle(color: textSecondary, fontSize: 12),
+                  style: TextStyle(
+                    color: textSecondary,
+                    fontSize: 12,
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
+              // Login button
               _primaryButton('Log In'),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
-              Text('or sign in with', style: TextStyle(color: textSecondary)),
+              // Divider text
+              Text(
+                'or sign in with',
+                style: TextStyle(
+                  color: textSecondary,
+                  fontSize: 13,
+                ),
+              ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               _socialButton('Continue with Google'),
+
               const SizedBox(height: 12),
+
               _appleButton(),
 
               const Spacer(),
 
-              // Text.rich(
-              //   TextSpan(
-              //     text: "Don't have an account? ",
-              //     style: TextStyle(color: textSecondary),
-              //     children: const [
-              //       TextSpan(
-              //         text: 'Sign Up',
-              //         style: TextStyle(color: primaryPurple),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              // Bottom text
               Text.rich(
                 TextSpan(
                   text: "Don't have an account? ",
@@ -101,13 +129,15 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
             ],
           ),
         ),
       ),
     );
   }
+
+  // ================= BUTTONS =================
 
   Widget _primaryButton(String text) {
     return SizedBox(
@@ -121,7 +151,14 @@ class LoginScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        child: Text(text),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
@@ -133,12 +170,15 @@ class LoginScreen extends StatelessWidget {
       child: OutlinedButton(
         onPressed: () {},
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Colors.white24),
+          side: const BorderSide(color: Colors.white24),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        child: Text(text, style: const TextStyle(color: textPrimary)),
+        child: Text(
+          text,
+          style: const TextStyle(color: textPrimary),
+        ),
       ),
     );
   }
