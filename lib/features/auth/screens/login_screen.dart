@@ -1,10 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:gallery_hub/auth/auth_server.dart';
+import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/auth_text_field.dart';
 import 'signup_screen.dart';
-
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+  try {
+      await authServer.value.signIn(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      if(!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } catch (e) {
+      if(!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: $e')),
+      );
+    } finally {
+     if (mounted) setState(() => _isLoading = false);
+    
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +99,16 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 36),
 
               // Email
-              const AuthTextField(hint: 'Enter your email'),
+              AuthTextField(hint: 'Enter your email',
+                  controller: emailController),
 
               const SizedBox(height: 16),
 
               // Password
-              const AuthTextField(
+              AuthTextField(
                 hint: 'Enter your password',
                 obscure: true,
+                controller: passwordController,
               ),
 
               const SizedBox(height: 10),
@@ -77,7 +128,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 28),
 
               // Login button
-              _primaryButton('Log In'),
+              _primaryButton(onPressed: _handleLogin, loading: _isLoading, text: 'Log In'),
 
               const SizedBox(height: 28),
 
@@ -139,12 +190,16 @@ class LoginScreen extends StatelessWidget {
 
   // ================= BUTTONS =================
 
-  Widget _primaryButton(String text) {
+  Widget _primaryButton({
+     required String text,
+    required VoidCallback onPressed,
+    required bool loading,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: loading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryPurple,
           shape: RoundedRectangleBorder(

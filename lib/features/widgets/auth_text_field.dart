@@ -4,17 +4,19 @@ import '../../../core/theme/app_colors.dart';
 class AuthTextField extends StatelessWidget {
   final String hint;
   final bool obscure;
+  final TextEditingController controller;
 
   const AuthTextField({
     super.key,
     required this.hint,
-    this.obscure = false,
+    this.obscure = false, required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       obscureText: obscure,
+      controller: controller,
       style: const TextStyle(color: textPrimary),
       decoration: InputDecoration(
         hintText: hint,
