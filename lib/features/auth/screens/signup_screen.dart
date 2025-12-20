@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gallery_hub/auth/auth_server.dart';
+import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import 'login_screen.dart';
 
+bool _isLoading = false;
+final TextEditingController  emailController = TextEditingController();
+final TextEditingController  passwordController = TextEditingController();
+final TextEditingController  nameController = TextEditingController();
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
@@ -72,14 +78,51 @@ class SignUpScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      _isLoading = true;
+                      try {
+                        await authServer.value.signUp(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                          fullName: nameController.text.trim(),
+
+                  ); if(!context.mounted) return;
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const HomePage()),
+                        );
+                  }
+                      catch (e) {
+                          // Handle sign-up error
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Sign Up Failed: $e')),
+                        );
+                      } finally {
+                        _isLoading = false;
+                      }
+    
+
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryPurple,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: primaryPurple.withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text(
+
+                    child : _isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    
+                    : const Text(
                       'Sign Up',
                       style: TextStyle(
                         color: Colors.white,
