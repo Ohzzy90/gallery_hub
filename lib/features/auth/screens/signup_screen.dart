@@ -4,12 +4,27 @@ import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import 'login_screen.dart';
 
-bool _isLoading = false;
-final TextEditingController  emailController = TextEditingController();
-final TextEditingController  passwordController = TextEditingController();
-final TextEditingController  nameController = TextEditingController();
-class SignUpScreen extends StatelessWidget {
+
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +70,12 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // Full Name
-                _inputField(hint: 'Enter your full name', label: 'Full Name'),
+                _inputField(hint: 'Enter your full name', label: 'Full Name', controller: nameController),
 
                 const SizedBox(height: 16),
 
                 // Email
-                _inputField(hint: 'Enter your email', label: 'Email'),
+                _inputField(hint: 'Enter your email', label: 'Email',controller: emailController),
 
                 const SizedBox(height: 16),
 
@@ -69,6 +84,7 @@ class SignUpScreen extends StatelessWidget {
                   hint: 'Enter your password',
                   label: 'Password',
                   obscure: true,
+                  controller: passwordController,
                 ),
 
                 const SizedBox(height: 24),
@@ -79,12 +95,12 @@ class SignUpScreen extends StatelessWidget {
                   height: 52,
                   child: ElevatedButton(
                     onPressed: () async {
-                      _isLoading = true;
+                      setState(() => _isLoading = true);
                       try {
                         await authServer.value.signUp(
                           email: emailController.text.trim(),
                           password: passwordController.text.trim(),
-                          fullName: nameController.text.trim(),
+                          fullName: nameController.text,
 
                   ); if(!context.mounted) return;
                         Navigator.pushReplacement(
@@ -98,8 +114,8 @@ class SignUpScreen extends StatelessWidget {
                           SnackBar(content: Text('Sign Up Failed: $e')),
                         );
                       } finally {
-                        _isLoading = false;
-                      }
+              if (mounted) setState(() => _isLoading = false);
+            }
     
 
                     },
@@ -202,6 +218,7 @@ class SignUpScreen extends StatelessWidget {
   static Widget _inputField({
     required String hint,
     required String label,
+    required TextEditingController controller,
     bool obscure = false,
   }) {
     return Column(
@@ -210,6 +227,7 @@ class SignUpScreen extends StatelessWidget {
         Text(label, style: const TextStyle(color: textSecondary)),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           obscureText: obscure,
           style: const TextStyle(color: textPrimary),
           decoration: InputDecoration(
