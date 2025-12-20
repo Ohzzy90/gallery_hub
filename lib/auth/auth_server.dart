@@ -35,7 +35,11 @@ class AuthServer {
     await firebaseAuth.signOut();
   }
   Future<void> resetPassword({required String email}) async {
-    await firebaseAuth.sendPasswordResetEmail(email: email);
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw Exception('Failed to send password reset email: $e');
+    }
   }
   Future<void> updateUsername({required String username}) async {
     await currentUser?.updateDisplayName(username);

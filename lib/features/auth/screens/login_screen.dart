@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gallery_hub/auth/auth_server.dart';
+import 'package:gallery_hub/auth/forgot_password.dart';
 import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/auth_text_field.dart';
@@ -100,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Email
               AuthTextField(hint: 'Enter your email',
-                  controller: emailController),
+                  controller: emailController, keyboardType: TextInputType.emailAddress,),
 
               const SizedBox(height: 16),
 
@@ -109,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 hint: 'Enter your password',
                 obscure: true,
                 controller: passwordController,
+                keyboardType: TextInputType.visiblePassword,
               ),
 
               const SizedBox(height: 10),
@@ -116,11 +118,26 @@ class _LoginScreenState extends State<LoginScreen> {
               // Forgot password
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 12,
+                child: GestureDetector(
+                  onTap: () {
+                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ForgotPassword(),
+                      ),
+                    );
+                  },
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500
+                      ),
+                    ),
                   ),
                 ),
               ),
