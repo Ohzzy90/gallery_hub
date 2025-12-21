@@ -98,7 +98,6 @@ Future<UserCredential?> signInWithGoogle() async {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        // The user canceled the sign-in
         return null; 
       }
 
