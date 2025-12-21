@@ -160,7 +160,41 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 20),
 
-              _socialButton('Continue with Google'),
+              _socialButton('Continue with Google',
+              loading: _isLoading,
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+
+                try {
+                 final userCredential = await authServer.value.signInWithGoogle();
+
+                  // 2. Check if the user successfully signed in
+                  if (userCredential != null) {
+                    if (!mounted) return;
+                    
+                    // 3. Navigate only on success
+                    Navigator.pushReplacement(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      MaterialPageRoute(builder: (_) => const HomePage()),
+                    );
+                  }
+                } catch (e) {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Google Sign-In Failed: $e')),
+                  );
+                } finally {
+                  if (mounted) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }
+                }
+              },
+              ),
 
               const SizedBox(height: 12),
 
@@ -235,25 +269,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialButton(String text) {
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: OutlinedButton(
-        onPressed: () {},
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: Colors.white24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(color: textPrimary),
+Widget _socialButton(String text, {required VoidCallback onPressed, required bool loading}) {
+  return SizedBox(
+    width: double.infinity,
+    height: 52,
+    child: OutlinedButton(
+      onPressed: loading ? null : onPressed, 
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.white24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
         ),
       ),
-    );
-  }
+      child: loading 
+        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+        : Text(
+            text,
+            style: const TextStyle(color: textPrimary),
+          ),
+    ),
+  );
+}
 
   Widget _appleButton() {
     return SizedBox(

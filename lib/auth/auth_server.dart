@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 ValueNotifier<AuthServer> authServer = ValueNotifier(AuthServer());
 
 class AuthServer {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  
 
   User ? get currentUser => firebaseAuth.currentUser;
 
@@ -31,9 +34,7 @@ class AuthServer {
     await credential.user?.updateDisplayName(fullName);
     await credential.user?.reload();
   }
-  Future<void> signOut() async {
-    await firebaseAuth.signOut();
-  }
+  
   Future<void> resetPassword({required String email}) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
@@ -92,6 +93,35 @@ class AuthServer {
     await currentUser?.updatePassword(newPassword);
     await currentUser?.reload();
   }
+Future<UserCredential?> signInWithGoogle() async {
+    try {
+      // 1. Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-  
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null; 
+      }
+
+      // 2. Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // 3. Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // 4. Sign in to Firebase with the new credential
+      return await firebaseAuth.signInWithCredential(credential);
+      
+    } catch (e) {
+      debugPrint("Error signing in with Google: $e");
+      rethrow;
+    }
+  }
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await firebaseAuth.signOut();
+  }
 }

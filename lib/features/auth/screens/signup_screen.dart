@@ -169,12 +169,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
 
                 // Google Button
-                _socialButton(text: 'Continue with Google'),
+                _socialButton(text: 'Continue with Google',
+                loading: _isLoading,
+                 onPressed: () async {
+                  setState(() => _isLoading = true);
+                  try {
+                    final userCredential = await authServer.value.signInWithGoogle();
+                    if (userCredential != null) {
+                      if(!context.mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HomePage()),
+                      );
+                    }
+                  } catch (e) {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Google Sign-In Failed: $e')),
+                    );
+                  } finally {
+            if (mounted) setState(() => _isLoading = false);
+                  }
+                }),
 
                 const SizedBox(height: 12),
 
                 // Apple Button
-                _socialButton(text: 'Continue with Apple', filled: true),
+                _socialButton(text: 'Continue with Apple', filled: true,
+                 onPressed: () {
+                 
+                },
+                ),
 
                 const SizedBox(height: 24),
 
@@ -245,12 +270,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  static Widget _socialButton({required String text, bool filled = false}) {
+  static Widget _socialButton({required String text, required VoidCallback onPressed, bool filled = false,
+    bool loading = false,
+
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: loading ? null : onPressed,
         style: OutlinedButton.styleFrom(
           backgroundColor: filled ? Colors.white : Colors.transparent,
           side: BorderSide(color: filled ? Colors.white : Colors.white24),
