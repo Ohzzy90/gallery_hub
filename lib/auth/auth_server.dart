@@ -95,7 +95,6 @@ class AuthServer {
   }
 Future<UserCredential?> signInWithGoogle() async {
     try {
-      // 1. Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
@@ -103,16 +102,15 @@ Future<UserCredential?> signInWithGoogle() async {
         return null; 
       }
 
-      // 2. Obtain the auth details from the request
+      // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-      // 3. Create a new credential
+      // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // 4. Sign in to Firebase with the new credential
       return await firebaseAuth.signInWithCredential(credential);
       
     } catch (e) {
