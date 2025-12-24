@@ -14,7 +14,6 @@ class DeepLinkService {
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
   
-  // Key for saving to storage
   static const String _kLastUsedCodeKey = 'last_used_oob_code';
 
   void initDeepLinks() {
@@ -22,7 +21,6 @@ class DeepLinkService {
 
     _linkSubscription = _appLinks.uriLinkStream.listen((Uri? uri) {
       if (uri != null) {
-        // Stream links are "manual" clicks, so we always want to handle them
         _handleLink(uri);
       }
     });
@@ -32,7 +30,6 @@ class DeepLinkService {
     try {
       final Uri? uri = await _appLinks.getInitialLink();
       if (uri != null) {
-        // For initial links, we pass a flag to check storage first
         _handleLink(uri, checkStorage: true);
       }
     } catch (e) {
@@ -46,15 +43,11 @@ class DeepLinkService {
     debugPrint("DEBUG: Processing Link: mode=$mode, oobCode=$oobCode");
 
     if (mode == 'resetPassword' && oobCode != null) {
-      
-      // 1. THE STORAGE CHECK
-      // If this is an app start (checkStorage=true), we see if we used this code before.
+
       if (checkStorage) {
         final prefs = await SharedPreferences.getInstance();
         final lastCode = prefs.getString(_kLastUsedCodeKey);
-        
-        // If the code from the link matches the one on disk, it's the "Restart Bug".
-        // We stop here and show NO error.
+
         if (lastCode == oobCode) {
           debugPrint("DEBUG: Code already used (found in storage). Ignoring.");
           return;
@@ -62,10 +55,9 @@ class DeepLinkService {
       }
 
       try {
-        // 2. Verify with Firebase
         await authServer.value.firebaseAuth.verifyPasswordResetCode(oobCode);
         
-        // 3. SUCCESS: Save this code to storage so we don't trigger it again on restart
+        //Save this code to prevent reuse and navigate to reset screen.
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_kLastUsedCodeKey, oobCode);
 
@@ -76,12 +68,9 @@ class DeepLinkService {
         );
       } catch (e) {
         debugPrint("DEBUG: Verification failed: $e");
-
-        // 4. FAILURE: Show the error.
-        // Since we filtered out the "Restart Bug" in Step 1, any error that reaches 
-        // here is a REAL invalid link (expired or broken), so we MUST show it.
         final currentContext = navigatorKey.currentContext;
         if (currentContext != null) {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(currentContext).showSnackBar(
             const SnackBar(
               content: Text("This reset link has expired or is invalid."),
