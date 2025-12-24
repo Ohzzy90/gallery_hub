@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gallery_hub/auth/auth_server.dart';
 import 'package:gallery_hub/auth/forgot_password.dart';
-import 'package:gallery_hub/services/deep_link_sevice.dart';
 import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/auth_text_field.dart';
@@ -21,9 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      DeepLinkService().initDeepLinks(context);
-    });
   }
   @override   
   void dispose() {

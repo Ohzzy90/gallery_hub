@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gallery_hub/auth/auth_server.dart';
+import 'package:gallery_hub/features/auth/screens/login_screen.dart';
+
+// @Ephraim edit this page to match the app theme and style but keep the functionality same
 
 class ConfirmPasswordScreen extends StatefulWidget {
   final String oobCode;
@@ -31,7 +34,11 @@ class _ConfirmPasswordScreenState extends State<ConfirmPasswordScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password reset successfully! Please login.')),
         );
-        Navigator.of(context).popUntil((route) => route.isFirst);
+       Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (_) => const LoginScreen()),
+    (route) => false, // This condition removes all previous screens
+  );
       }
     } catch (e) {
       if (mounted) {
@@ -86,7 +93,7 @@ class _ConfirmPasswordScreenState extends State<ConfirmPasswordScreen> {
                 decoration: const InputDecoration(
                   labelText: "Confirm Password",
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock_clock),
+                  prefixIcon: Icon(Icons.lock_outline),
                 ),
                 validator: (value) {
                   if (value != _passwordController.text) {
