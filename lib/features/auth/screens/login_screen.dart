@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gallery_hub/auth/auth_server.dart';
 import 'package:gallery_hub/auth/forgot_password.dart';
+import 'package:gallery_hub/services/deep_link_sevice.dart';
 import 'package:gallery_hub/tabs/home_page.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/auth_text_field.dart';
@@ -16,9 +17,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
+@override
+  void initState() {
+    super.initState();
 
-  @override
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeepLinkService().initDeepLinks(context);
+    });
+  }
+  @override   
   void dispose() {
+    // DeepLinkService().dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();

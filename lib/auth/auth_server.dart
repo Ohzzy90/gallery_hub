@@ -37,11 +37,37 @@ class AuthServer {
   
   Future<void> resetPassword({required String email}) async {
     try {
-      await firebaseAuth.sendPasswordResetEmail(email: email);
+      var acs = ActionCodeSettings(
+      url: 'https://gallery-hub-448c2.firebaseapp.com', // This URL is the ID for the link
+      handleCodeInApp: true, // <--- This is the magic switch
+      androidPackageName: 'com.example.gallery_hub', // MUST match your app exactly
+      androidInstallApp: true, // Install app if not found?
+      androidMinimumVersion: '12', // Minimum version of your app
+    );
+
+    // 2. Send the email with these settings
+    await firebaseAuth.sendPasswordResetEmail(
+      email: email, 
+      actionCodeSettings: acs
+    );
     } catch (e) {
       throw Exception('Failed to send password reset email: $e');
     }
   }
+  Future<void> confirmPasswordReset({
+  required String code,        // The code we get from the link
+  required String newPassword, // The password the user typed
+}) async {
+  try {
+    await firebaseAuth.confirmPasswordReset(
+      code: code, 
+      newPassword: newPassword
+    );
+  } catch (e) {
+    debugPrint("Error confirming reset: $e");
+    rethrow;
+  }
+}
   Future<void> updateUsername({required String username}) async {
     await currentUser?.updateDisplayName(username);
     await currentUser?.reload();
